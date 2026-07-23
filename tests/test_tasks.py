@@ -107,6 +107,17 @@ def test_patch_invalid_transition_todo_to_done_returns_422(client, created_task)
     assert r.status_code == 422
 
 
+def test_patch_task_from_done_back_to_todo_returns_422_for_invalid_transition(client, created_task):
+    task_id = created_task["id"]
+
+    setup_r = client.patch(f"/tasks/{task_id}", json={"status": "Done"})
+    assert setup_r.status_code == 200
+
+    r = client.patch(f"/tasks/{task_id}", json={"status": "ToDo"})
+    assert r.status_code == 422
+    assert "Invalid status transition" in r.json()["detail"]
+
+
 def test_patch_same_status_returns_200_and_preserves_status(client, created_task):
     task_id = created_task["id"]
     r = client.patch(f"/tasks/{task_id}", json={"status": "ToDo", "description": "same status update"})
