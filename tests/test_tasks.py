@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from tests.conftest import FUTURE_DUE_DATE
 
 # --- POST /tasks ---
@@ -25,6 +27,17 @@ def test_create_task_missing_title_returns_422(client):
         json={"description": "no title here", "due_date": FUTURE_DUE_DATE},
     )
     assert r.status_code == 422
+
+
+def test_create_task_without_due_date_returns_201(client):
+    r = client.post(
+        "/tasks",
+        json={"title": "task without due date"},
+    )
+    assert r.status_code == 201
+    body = r.json()
+    assert body["title"] == "task without due date"
+    assert body["due_date"] is None
 
 
 def test_create_task_blank_title_returns_422(client):
@@ -89,6 +102,83 @@ def test_list_tasks_filter_by_priority_returns_only_matches(client):
     assert len(body) == 1
     assert body[0]["title"] == "high task"
     assert body[0]["priority"] == "High"
+
+
+def test_list_tasks_filter_by_title_is_case_insensitive(client):
+    client.post(
+        "/tasks",
+        json={"title": "Write docs", "due_date": FUTURE_DUE_DATE},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "Ship feature", "due_date": FUTURE_DUE_DATE},
+    )
+
+    r = client.get("/tasks", params={"title": "write"})
+    assert r.status_code == 200
+    body = r.json()
+    assert len(body) == 1
+    assert body[0]["title"] == "Write docs"
+
+
+def test_list_tasks_filter_by_assignee_is_case_insensitive_exact(client):
+    client.post(
+        "/tasks",
+        json={"title": "task one", "assignee": "Ada", "due_date": FUTURE_DUE_DATE},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "task two", "assignee": "Grace", "due_date": FUTURE_DUE_DATE},
+    )
+
+    r = client.get("/tasks", params={"assignee": "ada"})
+    assert r.status_code == 200
+    body = r.json()
+    assert len(body) == 1
+    assert body[0]["title"] == "task one"
+    assert body[0]["assignee"] == "Ada"
+
+
+def test_list_tasks_filter_by_due_date_returns_only_matches(client):
+    matching_date = (date.today() + timedelta(days=8)).strftime("%d/%m/%Y")
+    other_date = (date.today() + timedelta(days=9)).strftime("%d/%m/%Y")
+
+    client.post(
+        "/tasks",
+        json={"title": "matching task", "due_date": matching_date},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "other task", "due_date": other_date},
+    )
+
+    r = client.get("/tasks", params={"due_date": matching_date})
+    assert r.status_code == 200
+    body = r.json()
+    assert len(body) == 1
+    assert body[0]["title"] == "matching task"
+    assert body[0]["due_date"] == matching_date
+
+
+def test_list_tasks_filter_by_overdue_returns_only_overdue_items(client):
+    client.post(
+        "/tasks",
+        json={"title": "overdue task", "due_date": (date.today() - timedelta(days=1)).strftime("%d/%m/%Y")},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "done task", "status": "Done", "due_date": (date.today() - timedelta(days=2)).strftime("%d/%m/%Y")},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "future task", "due_date": (date.today() + timedelta(days=1)).strftime("%d/%m/%Y")},
+    )
+
+    r = client.get("/tasks", params={"overdue": True})
+    assert r.status_code == 200
+    body = r.json()
+    assert len(body) == 1
+    assert body[0]["title"] == "overdue task"
 
 
 # --- GET /tasks/{id} ---

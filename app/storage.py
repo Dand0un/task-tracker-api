@@ -65,7 +65,7 @@ def get_all_tasks(
         tasks = [
             task
             for task in tasks
-            if task.due_date < today and task.status != TaskStatus.DONE
+            if task.due_date is not None and task.due_date < today and task.status != TaskStatus.DONE
         ]
     return tasks
 

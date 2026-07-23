@@ -32,22 +32,33 @@ def _validate_title(value: str) -> str:
     return stripped
 
 
-def _validate_due_date(value: object) -> date:
+def _parse_due_date(value: object) -> Optional[date]:
+    if value is None:
+        return None
+
     if isinstance(value, datetime):
-        parsed = value.date()
-    elif isinstance(value, date):
-        parsed = value
-    elif isinstance(value, str):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        if not value.strip():
+            return None
         try:
-            parsed = datetime.strptime(value, _DUE_DATE_FORMAT).date()
+            return datetime.strptime(value, _DUE_DATE_FORMAT).date()
         except ValueError as exc:
             raise ValueError(
                 "due_date must be a valid calendar date in dd/MM/yyyy format."
             ) from exc
-    else:
-        raise ValueError(
-            "due_date must be a valid calendar date in dd/MM/yyyy format."
-        )
+
+    raise ValueError(
+        "due_date must be a valid calendar date in dd/MM/yyyy format."
+    )
+
+
+def _validate_due_date(value: object) -> Optional[date]:
+    parsed = _parse_due_date(value)
+    if parsed is None:
+        return None
 
     if parsed <= date.today():
         raise ValueError("due_date must be greater than now.")
@@ -62,7 +73,7 @@ class TaskCreate(BaseModel):
     status: TaskStatus = TaskStatus.TODO
     priority: TaskPriority = TaskPriority.MEDIUM
     assignee: Optional[str] = None
-    due_date: date
+    due_date: Optional[date] = None
 
     @field_validator("title")
     @classmethod
@@ -71,7 +82,7 @@ class TaskCreate(BaseModel):
 
     @field_validator("due_date", mode="before")
     @classmethod
-    def validate_due_date(cls, value: object) -> date:
+    def validate_due_date(cls, value: object) -> Optional[date]:
         return _validate_due_date(value)
 
 
@@ -109,12 +120,14 @@ class TaskResponse(BaseModel):
     status: TaskStatus
     priority: TaskPriority
     assignee: Optional[str]
-    due_date: date
+    due_date: Optional[date] = None
     created_at: datetime
     updated_at: datetime
 
     @field_serializer("due_date")
-    def serialize_due_date(self, value: date) -> str:
+    def serialize_due_date(self, value: Optional[date]) -> Optional[str]:
+        if value is None:
+            return None
         return value.strftime(_DUE_DATE_FORMAT)
 
 
@@ -135,5 +148,10 @@ class TaskFilter(BaseModel):
     priority: Optional[TaskPriority] = None
     title: Optional[str] = None
     assignee: Optional[str] = None
-    due_date: Optional[date] = None
+    due_date: Optional[date | str] = None
     overdue: Optional[bool] = None
+
+    @field_validator("due_date", mode="before")
+    @classmethod
+    def validate_due_date(cls, value: object) -> Optional[date]:
+        return _parse_due_date(value)
