@@ -4,12 +4,13 @@ Creates the FastAPI app instance and wires up the /health endpoint.
 Run with: uvicorn app.main:app --reload
 """
 from datetime import datetime, timezone
+from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import APP_ENV
-from app.models import TaskCreate, TaskUpdate, TaskResponse, TaskStatus, TaskPriority
+from app.models import TaskCreate, TaskFilter, TaskResponse, TaskUpdate
 from app import storage
 from app.business_rules import validate_status_transition
 from app.schemas.health import HealthResponse
@@ -52,11 +53,8 @@ def create_task(payload: TaskCreate) -> TaskResponse:
 
 
 @app.get("/tasks", response_model=list[TaskResponse], tags=["tasks"])
-def list_tasks(
-    status: TaskStatus | None = None,
-    priority: TaskPriority | None = None,
-) -> list[TaskResponse]:
-    return storage.get_all_tasks(status=status, priority=priority)
+def list_tasks(filters: Annotated[TaskFilter, Depends()]) -> list[TaskResponse]:
+    return storage.get_all_tasks(**filters.model_dump(exclude_none=True))
 
 
 @app.get("/tasks/{task_id}", response_model=TaskResponse, tags=["tasks"])

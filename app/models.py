@@ -6,7 +6,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 
 _DUE_DATE_FORMAT = "%d/%m/%Y"
 
@@ -109,5 +109,31 @@ class TaskResponse(BaseModel):
     status: TaskStatus
     priority: TaskPriority
     assignee: Optional[str]
+    due_date: date
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("due_date")
+    def serialize_due_date(self, value: date) -> str:
+        return value.strftime(_DUE_DATE_FORMAT)
+
+
+class TaskFilter(BaseModel):
+    """Query filters for listing tasks (in-memory).
+
+    Matching semantics when applied:
+    - status / priority: exact enum match
+    - title: case-insensitive substring match on task.title
+    - assignee: case-insensitive exact match on task.assignee
+    - due_date: exact match (task.due_date == due_date)
+    - overdue: when True, task.due_date < date.today() and status != Done
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    status: Optional[TaskStatus] = None
+    priority: Optional[TaskPriority] = None
+    title: Optional[str] = None
+    assignee: Optional[str] = None
+    due_date: Optional[date] = None
+    overdue: Optional[bool] = None

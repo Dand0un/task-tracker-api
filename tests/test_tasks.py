@@ -1,7 +1,12 @@
+from tests.conftest import FUTURE_DUE_DATE
+
 # --- POST /tasks ---
 
 def test_create_task_valid_returns_201_with_full_body(client):
-    r = client.post("/tasks", json={"title": "write tests"})
+    r = client.post(
+        "/tasks",
+        json={"title": "write tests", "due_date": FUTURE_DUE_DATE},
+    )
     assert r.status_code == 201
     body = r.json()
     assert body["id"]
@@ -15,22 +20,42 @@ def test_create_task_valid_returns_201_with_full_body(client):
 
 
 def test_create_task_missing_title_returns_422(client):
-    r = client.post("/tasks", json={"description": "no title here"})
+    r = client.post(
+        "/tasks",
+        json={"description": "no title here", "due_date": FUTURE_DUE_DATE},
+    )
     assert r.status_code == 422
 
 
 def test_create_task_blank_title_returns_422(client):
-    r = client.post("/tasks", json={"title": "   "})
+    r = client.post(
+        "/tasks",
+        json={"title": "   ", "due_date": FUTURE_DUE_DATE},
+    )
     assert r.status_code == 422
 
 
 def test_create_task_invalid_priority_returns_422(client):
-    r = client.post("/tasks", json={"title": "bad priority", "priority": "Urgent"})
+    r = client.post(
+        "/tasks",
+        json={
+            "title": "bad priority",
+            "priority": "Urgent",
+            "due_date": FUTURE_DUE_DATE,
+        },
+    )
     assert r.status_code == 422
 
 
 def test_create_task_unknown_field_returns_422(client):
-    r = client.post("/tasks", json={"title": "extra field", "foo": "bar"})
+    r = client.post(
+        "/tasks",
+        json={
+            "title": "extra field",
+            "foo": "bar",
+            "due_date": FUTURE_DUE_DATE,
+        },
+    )
     assert r.status_code == 422
 
 
@@ -49,8 +74,14 @@ def test_list_tasks_filter_by_status_no_match_returns_200_and_empty_list(client,
 
 
 def test_list_tasks_filter_by_priority_returns_only_matches(client):
-    client.post("/tasks", json={"title": "low task", "priority": "Low"})
-    client.post("/tasks", json={"title": "high task", "priority": "High"})
+    client.post(
+        "/tasks",
+        json={"title": "low task", "priority": "Low", "due_date": FUTURE_DUE_DATE},
+    )
+    client.post(
+        "/tasks",
+        json={"title": "high task", "priority": "High", "due_date": FUTURE_DUE_DATE},
+    )
 
     r = client.get("/tasks", params={"priority": "High"})
     assert r.status_code == 200
