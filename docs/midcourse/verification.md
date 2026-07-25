@@ -1,3 +1,8 @@
+The initial test run identified two failing test cases:
+
+Overdue filter, Status transition validation as shown in the below output:
+
+<<<
 ================================= test session starts =================================
 platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0
 rootdir: C:\Applications\AICourse\task-tracker-api
@@ -64,8 +69,20 @@ FAILED tests/test_tasks.py::test_list_tasks_filter_by_overdue_returns_only_overd
 FAILED tests/test_tasks.py::test_patch_task_from_done_back_to_todo_returns_422_for_invalid_transition - assert 422 == 200
 ====================== 2 failed, 21 passed, 3 warnings in 1
 
+>>>
+the root cause was:
+-Overdue-task filtering is failing because overdue dates are being rejected too early
+In models.py, the due_date validation currently treats a date that is on or before today as invalid.
+The test for overdue tasks creates tasks with past due dates on purpose, so those tasks never get stored successfully.
 
-after fix test:
+-The status transition rules are too restrictive for the patch workflow
+In business_rules.py, the allowed transitions are currently limited to the set that does not include a direct ToDo -> Done move.
+The patch test expects a task to be marked done successfully during setup, but the current validation rejects that transition with 422.
+So the patch endpoint is blocking a transition the test expects to be allowed.
+
+after fixing the overdue check and the test behavior it self all test passed as hown in the below output:
+
+<<<
 
 
 =============================== short test summary info ===============================
@@ -94,3 +111,16 @@ tests/test_tasks.py::test_patch_task_from_done_back_to_todo_returns_422_for_inva
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== 23 passed, 3 warnings in 0.89s ============================
+>>>
+Behavior Contract
+
+After the fixes, the application guarantees that:
+
+GET /tasks?overdue=true
+Returns only tasks whose due date is before today.
+Excludes completed tasks.
+Excludes tasks that are not overdue.
+PATCH /tasks/{id}
+Enforces the defined status transition rules.
+Returns 422 Unprocessable Entity for invalid transitions.
+Accepts only valid workflow transitions.
