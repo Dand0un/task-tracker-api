@@ -19,6 +19,16 @@ _tasks: dict[str, TaskResponse] = {}
 
 
 def add_task(payload: TaskCreate) -> TaskResponse:
+    """Create and persist a new task from validated input.
+
+    Args:
+        payload: Validated task-creation data.
+
+    Returns:
+        TaskResponse: The stored task, with a generated `id` and
+        `created_at`/`updated_at` set to the current UTC time.
+        `description` defaults to an empty string if not provided.
+    """
     now = datetime.now(timezone.utc)
     task = TaskResponse(
         id=str(uuid4()),
@@ -38,6 +48,18 @@ def get_all_tasks(
     status: Optional[TaskStatus] = None,
     priority: Optional[TaskPriority] = None,
 ) -> list[TaskResponse]:
+    """Return all stored tasks, optionally filtered.
+
+    Args:
+        status: If provided, only tasks with this exact status are
+            included.
+        priority: If provided, only tasks with this exact priority are
+            included.
+
+    Returns:
+        list[TaskResponse]: Matching tasks, in insertion order. Empty
+        list if none match or no tasks exist.
+    """
     tasks = list(_tasks.values())
     if status is not None:
         tasks = [task for task in tasks if task.status == status]
@@ -47,10 +69,34 @@ def get_all_tasks(
 
 
 def get_task_by_id(task_id: str) -> Optional[TaskResponse]:
+    """Look up a single task by id.
+
+    Args:
+        task_id: The task's unique id.
+
+    Returns:
+        Optional[TaskResponse]: The matching task, or None if no task
+        with `task_id` exists.
+    """
     return _tasks.get(task_id)
 
 
 def update_task(task_id: str, payload: TaskUpdate) -> Optional[TaskResponse]:
+    """Apply a partial update to a stored task.
+
+    Only fields explicitly set on `payload` are applied; unset fields
+    are left unchanged. If `payload` has no fields set, the existing
+    task is returned unchanged (its `updated_at` is not modified).
+
+    Args:
+        task_id: The task's unique id.
+        payload: Fields to update.
+
+    Returns:
+        Optional[TaskResponse]: The updated task, or None if no task
+        with `task_id` exists. When at least one field changes,
+        `updated_at` is set to the current UTC time.
+    """
     task = _tasks.get(task_id)
     if task is None:
         return None
@@ -66,6 +112,15 @@ def update_task(task_id: str, payload: TaskUpdate) -> Optional[TaskResponse]:
 
 
 def delete_task(task_id: str) -> bool:
+    """Delete a task by id.
+
+    Args:
+        task_id: The task's unique id.
+
+    Returns:
+        bool: True if a task was deleted, False if no task with
+        `task_id` existed.
+    """
     if task_id in _tasks:
         del _tasks[task_id]
         return True
