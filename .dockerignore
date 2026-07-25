@@ -1,0 +1,48 @@
+# Version control
+.git
+.gitignore
+
+# Python bytecode / cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+
+# Node (not currently used by the API, excluded defensively)
+node_modules/
+package-lock.json
+
+# Not needed by the running API container
+tests/
+docs/
+app/frontend/
+app/CLAUDE.md
+README.md
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Docker meta-files themselves
+Dockerfile
+.dockerignore
