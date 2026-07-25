@@ -60,8 +60,8 @@ def _validate_due_date(value: object) -> Optional[date]:
     if parsed is None:
         return None
 
-    if parsed <= date.today():
-        raise ValueError("due_date must be greater than now.")
+    # if parsed <= date.today():
+    #     raise ValueError("due_date must be greater than now.")
     return parsed
 
 
