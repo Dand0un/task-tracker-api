@@ -124,3 +124,29 @@ PATCH /tasks/{id}
 Enforces the defined status transition rules.
 Returns 422 Unprocessable Entity for invalid transitions.
 Accepts only valid workflow transitions.
+
+
+
+------------------------------------------------
+intentionally breaking "test_create_task_without_due_date_returns_201" by making due date required by changing _validate_due_date in models.py:
+if parsed is None:
+        raise ValueError("Due date must not be blank.")
+
+failed after change: =========================== short test summary info ===========================
+FAILED tests/test_tasks.py::test_create_task_without_due_date_returns_201 - assert 422 == 201
+================== 1 failed, 22 passed, 2 warnings in 1.23s ===================
+
+when changed back it passes :
+======================= 23 passed, 2 warnings in 0.87s ========================
+------------------------------------------------------------------------------------
+
+intentionally test_list_tasks_filter_by_status_no_match_returns_200_and_empty_list by changing the response of the filter in storage.py
+if status is not None:
+    return tasks
+
+=========================== short test summary info ===========================
+FAILED tests/test_tasks.py::test_list_tasks_filter_by_status_no_match_returns_200_and_empty_list - AssertionError: assert [{'id': '5e3c... 'ToDo', ...}] == []
+================== 1 failed, 22 passed, 2 warnings in 1.23s ===================
+
+when code changed back :
+======================= 23 passed, 2 warnings in 0.93s =======================
