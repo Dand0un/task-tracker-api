@@ -14,6 +14,11 @@ Do NOT suggest code changes yet. I only want to confirm that you can read the re
 
 --------------------
 
+**weak prompt**:Help me build add due date to my task tracker.
+weak prompt does not tell the AI what to use and where to add the field, it suggested adding an new api to add a due date which i rejected
+
+**Strong prompt**:
+
 You are a senior Python backend engineer. Update the existing TaskCreate and TaskUpdate Models to support due_date
 
 Context:
@@ -35,10 +40,36 @@ Add due_date: date with date format(dd/MM/yyyy) to these existing models:
 - DO NOT change any of the other existing models 
 
 -----------------
-it did not include the due date in the response
+Why it is better
+
+Specifies the exact file and models to modify.
+States that the project already exists.
+Specifies Pydantic v2.
+Defines the validation rules.
+Prevents unrelated changes.
+
+AI response summary
+
+The AI updated the TaskCreate and TaskUpdate models by adding a due_date field and implementing validation for past and invalid dates.
+
+What I accepted
+
+Added the due_date field.
+Used Pydantic v2 validators.
+Kept the existing models unchanged.
+
+What I edited
+
+The AI did not include due_date in the response model, so I created another prompt asking it to update TaskResponse.
+
+What I rejected
+
+I did not use the AI's earlier suggestion of creating a separate endpoint because the existing create/update endpoints already handled this functionality.
 
 -------------
-You are a senior Python backend engineer. Update the existing TaskResponse response model to include due_date
+You are a senior Python backend engineer. Update the existing TaskResponse response model to include due_date, at first it added it without format then i adjusted the prompt to include the format i want:
+
+
 
 Context:
 - This project currently has a working routes endpoints.
@@ -58,18 +89,63 @@ Use Pydantic v2 syntax only.
 - DO NOT change any of the other existing models 
 
 -------------
+AI response summary
+
+The AI added due_date to the response model but returned it using the default date format.
+
+Accepted
+
+Adding the field to the response model.
+
+Edited
+
+I refined the prompt to require the dd/MM/yyyy format.
+
+Rejected
+
+The default date formatting.
 
 Search + combined filters
 -------------------------
+
+**weak version** add filters to the get tasks list
+
+Problem: The AI assumed filters should be added for every field, including description, and did not include the overdue filter.
+
+**Strong version**
+
+Strong version includes, planning first not directly changing code accepting each change seperately 
+
 You are  a Senior python backend engineer 
 PLan the possibility of adding  filters where the api search for task names, or  assignee or passed due dates or a specific due date. 
 
 Do not change anything yet just plan the code keep the same structure.
  Use Pydantic v2 syntax only.
  ---------------------------
+Why it is better
+
+Requests planning before implementation.
+Keeps the existing architecture.
+Prevents unnecessary code changes.
+
+AI response summary
+
+The AI produced a step-by-step implementation plan covering models, routes, filtering logic, and testing.
+
+Accepted
+
+The incremental implementation plan.
+
+Edited
+
+Broke the work into smaller prompts for each file.
+
+Rejected
+
+Any suggestions outside the requested project structure.
 
 
-Add TaskFilter (Pydantic v2) in models.py
+**Add TaskFilter (Pydantic v2) in models.py**
 
 
 You are a senior Python backend engineer. Add TaskFilter (Pydantic v2) in models.py
@@ -111,8 +187,28 @@ Constraints:
 - Keep the plan aligned with Module 3: small changes, inspect the diff, run the app or tests, then refine.
 - Do not introduce frameworks, new backend features, or unrelated files
 ------------------------------------------------------------
-fix the layout
 
+AI response summary
+
+The AI generated the TaskFilter model with the requested filter fields.
+
+Accepted
+
+Title search.
+Assignee filter.
+Due-date filter.
+Overdue filter.
+
+Rejected
+
+Any additional models or unrelated changes.
+
+**fix the layout**
+
+at first AI generated the filter front end but the layout was not compatible with the project exiting design the spacing was to narrow.
+ **weak prompt** fid the layout
+ 
+**strong prompt**:
 fix the filter layout in frontend/index.html.
 Context:
 - frontend index.html
@@ -126,3 +222,19 @@ Constraints:
 
 - Do not change the look of any other element.
 - Do not change the backend.
+AI response summary
+
+The AI updated the filter spacing and button layout without modifying the backend.
+
+Accepted
+
+Additional spacing.
+Improved button alignment.
+
+Edited
+
+Minor CSS adjustments to better match the existing design.
+
+Rejected
+
+Any changes affecting other UI elements.
