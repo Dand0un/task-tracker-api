@@ -1,36 +1,36 @@
 # Personal AI Coding Playbook
 
-## 1. When I reach for AI first
+## When I reach for AI first
 
-- [Task or situation]:  brainstorming solutions, generating boilerplate code, writing tests, debugging, documentation, or code reviews.
-- [Goal or outcome]: Save time, explore alternatives, improve code quality, and accelerate development without replacing my own judgment.
+- I use AI for drafting or reviewing docs, brainstorming implementation options, generating boilerplate, and helping with debugging when I already understand the problem.
+- I use it to save time, explore alternatives, and improve clarity, but I still make the final decision myself.
 
-## 2. When I do not reach for AI
+## When I do not reach for AI first
 
-- [Task or situation]:  Working with confidential client information, production credentials, proprietary business logic, or sensitive personal data.
-- [Reason or boundary]:  Protect confidentiality, comply with company policies and NDAs, and avoid exposing sensitive information.
+- I avoid AI for sensitive or high-risk work, especially anything involving secrets, private data, production credentials, or code I do not understand well enough to review.
+- I also slow down when the task is about architecture decisions, security hardening, or anything where a wrong suggestion could create hidden risk.
 
-## 3. My non-negotiables
+## My non-negotiables
 
-- [Practice or safeguard]: I review, understand, and validate every AI-generated suggestion before using it.
-- [Information or action I protect]: Credentials, API keys, client data, personal information, confidential documents, and any code or data that should not leave the organization.
+- I never paste credentials, tokens, or private customer data into AI tools.
+- I review, test, and explain every AI suggestion before I accept it.
+- I am responsible for the final result, so I do not rely on AI without verification.
 
+## My review rules
 
-## 4. My review rules
+- I check correctness, security, maintainability, and whether the change matches the repository scope.
+- I run the relevant commands myself: tests, health checks, Docker checks, and diff review.
+- If an AI suggestion seems vague, risky, or unnecessary, I reject it or rewrite it before using it.
 
-- [What I check]: Correctness, security, performance, coding standards, edge cases, and that I understand every line of the generated code.
+## What I am still figuring out
 
-- [When I require another review]: For production changes, security-sensitive code, architectural decisions, or whenever I'm unsure about the implementation.
+- I am still learning when AI is most helpful for fast iteration and when it is better to solve something manually.
+- I want to improve my prompting so I can get more useful, less noisy results from AI tools.
 
-## 5. What I am still figuring out
+## Decision Card
 
-- [Question or uncertainty]: How to best integrate AI into my daily workflow while maintaining high engineering standards.
-- [Skill or decision to develop]: Writing better prompts, validating AI-generated solutions more efficiently, and knowing when to rely on AI versus solving problems independently.
-
-AI-Assisted Coding - Module 5 Prompt Library
-- For a new feature I reach for: Cursor
-- For a code review I reach for: Claude
-- For debugging I reach for: copilot
-- For infrastructure I reach for: Claude
-- I will never paste credentials into an AI tool.
-- My one rule is: treat AI like junior, explain everything and review everything
+- New feature: I may use AI for brainstorming and scaffolding, but I will verify the actual implementation myself.
+- Code review: I use AI to spot likely issues, but I still inspect the diff and the surrounding code manually.
+- Debugging: I use AI to suggest a hypothesis, then I verify it with the repo, tests, and runtime behavior.
+- Infrastructure: I use AI for guidance, but I verify the workflow, Docker config, and commands directly.
+- Never paste: secrets, credentials, environment values, or personal data.
