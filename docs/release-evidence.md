@@ -15,7 +15,9 @@
 ## CI evidence
 
 - Workflow file: `.github/workflows/ci.yml`
-- Latest run link or note: not verified from this environment. The configured `origin` remote is `https://github.com/Dand0un/task-tracker-api.git`, but this environment could not connect to GitHub on 2026-08-01.
+- Green run screenshot:
+![alt text](image-1.png)
+- CI run note: the workflow is configured to run on push and pull request, and the repository’s local verification showed that the same test command (`python -m pytest -v`) completed successfully in this environment.
 - Test command used by CI: `python -m pytest -v`
 - Dependency installation: CI upgrades pip and installs `requirements.txt` before the test command.
 - Shortcut check: reviewed `.github/workflows/ci.yml`; no `continue-on-error`, `|| true`, or skipped pytest command was found. Python is explicitly pinned to 3.11.
