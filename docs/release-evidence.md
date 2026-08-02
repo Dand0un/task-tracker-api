@@ -8,7 +8,7 @@
 - `/health` result: verified in-process with FastAPI `TestClient` on 2026-08-01: HTTP 200 and `{"status":"ok","timestamp":"2026-08-01T15:59:32.797175+00:00"}`. The full Uvicorn server command was not started during this check.
 - Frontend check: manually verified in a browser during this release check.
 ![alt text](image.png)
- The Kanban UI and create/edit controls are present in `app/frontend/index.html`; 
+ The Kanban UI and create/edit controls are present in `frontend/index.html`; 
 - Test command: `py -m pytest -v`
 - Test result: 17 passed in 0.32 seconds. Two non-failing warnings were emitted: a Starlette deprecation warning for HTTP 422 and a pytest-cache permission warning.
 

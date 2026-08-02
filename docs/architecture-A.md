@@ -22,7 +22,7 @@ Task Tracker is a small FastAPI REST API with a standalone browser UI for creati
 - `app/models.py` — task enums and Pydantic create/update/response schemas.
 - `app/storage.py` — in-memory dictionary and CRUD operations.
 - `app/business_rules.py` — permitted task-status transitions.
-- `app/frontend/index.html` — standalone task-board UI and API calls.
+- `frontend/index.html` — standalone task-board UI and API calls.
 - `app/core/config.py` — `.env` loading and basic runtime settings.
 - `app/schemas/health.py` — health-check response schema.
 - `tests/test_tasks.py` — API behavior coverage.

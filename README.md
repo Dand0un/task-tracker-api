@@ -69,7 +69,7 @@ py -m uvicorn app.main:app --reload
 
 The API is available at `http://127.0.0.1:8000`.
 
-To view the Kanban frontend, open `app/frontend/index.html` with VS Code Live Server at `http://127.0.0.1:5500` while the API is running.
+To view the Kanban frontend, open `frontend/index.html` with VS Code Live Server at `http://127.0.0.1:5500` while the API is running.
 
 ### How to run tests
 

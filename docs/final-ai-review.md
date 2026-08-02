@@ -4,7 +4,7 @@
 
 - Repo-specific stack and commands included: yes
 - Docs-first/read-first guardrail included: yes
-- Unexpected app/frontend edits rule included: yes
+- Unexpected frontend-path move edits rule included: yes
 
 ## AI code review mini-log
 

@@ -89,6 +89,12 @@ def test_patch_partial_update_keeps_other_fields(client, created_task):
     assert body["priority"] == created_task["priority"]
 
 
+def test_patch_null_title_returns_422(client, created_task):
+    task_id = created_task["id"]
+    r = client.patch(f"/tasks/{task_id}", json={"title": None})
+    assert r.status_code == 422
+
+
 def test_patch_not_found_returns_404(client):
     r = client.patch("/tasks/does-not-exist", json={"description": "nope"})
     assert r.status_code == 404

@@ -67,7 +67,7 @@ No frontend test framework or frontend test files are visible in the repository,
 
 ## 4. Frontend Changes
 
-Change [app/frontend/index.html](C:\Applications\AICourse\task-tracker-api\app\frontend\index.html), the repository’s only visible frontend artifact.
+Change [frontend/index.html](C:\Applications\AICourse\task-tracker-api\frontend\index.html), the repository’s only visible frontend artifact.
 
 The current UI renders task cards through `renderTaskCard`, opens the existing task modal through `handleBoardClick`, and uses a single `task-form` for create/edit. Extend the edit-task experience to include a comments section for the selected task:
 
@@ -117,7 +117,7 @@ Task deletion needs an explicit policy. If cascade deletion is selected, `delete
 - [app/schemas/health.py](C:\Applications\AICourse\task-tracker-api\app\schemas\health.py)
 - [tests/conftest.py](C:\Applications\AICourse\task-tracker-api\tests\conftest.py)
 - [tests/test_tasks.py](C:\Applications\AICourse\task-tracker-api\tests\test_tasks.py)
-- [app/frontend/index.html](C:\Applications\AICourse\task-tracker-api\app\frontend\index.html)
+- [frontend/index.html](C:\Applications\AICourse\task-tracker-api\frontend\index.html)
 - [README.md](C:\Applications\AICourse\task-tracker-api\README.md)
 - [docs/architecture-A.md](C:\Applications\AICourse\task-tracker-api\docs\architecture-A.md)
 - [docs/user-stories.md](C:\Applications\AICourse\task-tracker-api\docs\user-stories.md)

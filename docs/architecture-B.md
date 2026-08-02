@@ -25,7 +25,7 @@ fields optional so PATCH requests can be partial.
 
 ## Request flow when a user creates a task
 
-1. The browser form in `app/frontend/index.html` trims the title, builds JSON,
+1. The browser form in `frontend/index.html` trims the title, builds JSON,
    and sends `POST http://localhost:8000/tasks`.
 2. FastAPI routes the request to `create_task` in `app/main.py` and validates
    the body as `TaskCreate`. Invalid input receives FastAPI's 422 response
@@ -45,7 +45,7 @@ fields optional so PATCH requests can be partial.
 | `app/business_rules.py` | Allows only `ToDo → InProgress`, `InProgress → Done`, and `Done → InProgress` status changes (same-status updates are allowed). |
 | `app/schemas/health.py` | Pydantic response schema for `GET /health`. |
 | `app/core/config.py` | Loads `.env` values and exposes `PORT` and `APP_ENV`. |
-| `app/frontend/index.html` | Static task-board UI; fetches, creates, edits, and drag-updates tasks. |
+| `frontend/index.html` | Static task-board UI; fetches, creates, edits, and drag-updates tasks. |
 
 ## Conventions
 

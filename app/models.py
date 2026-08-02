@@ -66,25 +66,25 @@ class TaskUpdate(BaseModel):
     priority: Optional[TaskPriority] = None
     assignee: Optional[str] = None
 
-    @field_validator("title")
+    @field_validator("title", mode="before")
     @classmethod
     def validate_title(cls, value: Optional[str]) -> Optional[str]:
-        """Validate and normalize the `title` field, if provided.
+        """Validate and normalize the `title` field when provided.
 
         Args:
-            value: The raw title string, or None if `title` is not
-                being updated.
+            value: The raw title string, or the raw value supplied for
+                the field in the request payload.
 
         Returns:
-            Optional[str]: None if `value` is None, otherwise the
-            title with leading/trailing whitespace stripped.
+            Optional[str]: The title with leading/trailing whitespace
+            stripped when a non-null string is provided.
 
         Raises:
-            ValueError: If `value` is provided but the stripped title
-                is empty, or longer than 200 characters.
+            ValueError: If `value` is `None` (explicit null), or if the
+                stripped title is empty, or longer than 200 characters.
         """
         if value is None:
-            return value
+            raise ValueError("Title must not be null.")
         return _validate_title(value)
 
 
